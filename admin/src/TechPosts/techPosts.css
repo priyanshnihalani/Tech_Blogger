@@ -1,0 +1,23 @@
+.article::-webkit-scrollbar{
+    display: none;
+}
+
+.folded-paper {
+    position: relative;
+    background: #f5f5f5;
+    border-radius: 12px;
+}
+
+.folded-paper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 40px;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background: linear-gradient(140deg, rgb(191, 191, 191, 0.8) 50%, white 40%);
+    clip-path: polygon(10 0, 100% 100%, 100% 0);
+    box-shadow: 2px 6px 6px rgba(0, 0, 0, 0.2);
+}
