@@ -18,6 +18,7 @@
     "jost": "^0.0.2",
     "leaflet": "^1.9.4",
     "react": "^19.0.0",
+    "react-content-loader": "^7.0.2",
     "react-dom": "^19.0.0",
     "react-fontawesome": "^1.7.1",
     "react-hook-form": "^7.54.2",

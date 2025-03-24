@@ -2,9 +2,10 @@ import Header from '../Header/Header'
 import Footer from '../Footer/Footer'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAdd, faClose, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faAdd, faClose } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
 import './techPosts.css'
+import MyContentLoader from '../Content_Loader/ContentLoader'
 
 function TechPosts() {
     const [posts, setPosts] = useState([])
@@ -15,7 +16,7 @@ function TechPosts() {
     const [content, setContent] = useState(null);
     const [preview, setPreview] = useState(null);
     const [fileMeta, setFileMeta] = useState(null)
-
+    const [loading, setLoading] = useState(false)
 
     const {
         register,
@@ -38,11 +39,20 @@ function TechPosts() {
 
     useEffect(() => {
         async function fetchPosts() {
-            const response = await fetch('http://localhost:3000/techposts')
-            const data = await response.json()
-            console.log(data)
-            if (data.message !== 'No posts found') {
-                setPosts(data.data)
+            try{
+                setLoading(true)
+                const response = await fetch('http://localhost:3000/techposts')
+                const data = await response.json()
+                console.log(data)
+                if (data.message !== 'No posts found') {
+                    setPosts(data.data)
+                }
+            }
+            catch(error){
+                alert(error)
+            }
+            finally{
+                setLoading(false)
             }
         }
         fetchPosts()
@@ -101,20 +111,6 @@ function TechPosts() {
         }
     }
 
-    async function deletePost(id) {
-        console.log(id)
-        const response = await fetch("http://localhost:3000/deletepost", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({id})
-        })
-
-        const result = await response.json()
-        alert(result.message)
-    }
-
     return (
         <>
             <Header />
@@ -127,32 +123,41 @@ function TechPosts() {
                     </button>
                 </section>
 
-                <section className='flex flex-col items-center lg:flex-row flex-wrap relative w-full lg:w-3/4 mt-40 md:mt-20 px-4'>
+                {loading ? <MyContentLoader /> : <section className='flex flex-col items-center lg:flex-row flex-wrap relative w-full lg:w-3/4 xl:w-[100%] mt-32 md:mt-20 px-4'>
                     {posts.length > 0 && !chooseUpload ? (
-                        posts.map((item, index) => (
-                            <div key={index} className='space-y-3 md:w-1/2 lg:w-1/3 text-black mb-4 p-4  rounded-lg  hover:shadow-2xl transition-transform'>
-                                <div className='flex justify-between'>
-                                    <h2 className='text-md font-bold text-gray-900 '>{item.title}</h2>
-                                    <button className='cursor-pointer text-red-500' onClick={() => deletePost(item.id)}><FontAwesomeIcon icon={faTrash} /></button>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 space-x-2 w-full">
+                            {posts.map((item, index) => (
+                                <div key={index} className=' bg-white  rounded-lg overflow-hidden py-5 px-2  transition-transform duration-300 hover:scale-105'>
+                                    <h2 className='text-lg font-semibold text-gray-900 mb-3'>{item.title}</h2>
+                                    {item.url && (
+                                        <img src={item.url} alt="Post Image" className='rounded-lg w-full h-50 object-cover' />
+                                    )}
+                                    {item.article && (
+                                        <div className={`folded-paper p-4  rounded-lg w-full h-50 flex items-center justify-center text-white font-medium text-sm shadow-md inset-shadow-emerald-50`} style={{ backgroundColor: item.bgColor }}>
+                                            <p className='line-clamp-6 text-center'>{item.article}</p>
+                                        </div>
+                                    )}
+                                    <div className='mt-4'>
+                                        <p className="px-2 line-clamp-2 text-gray-600 mb-2 font-medium">
+                                            {item.description}
+                                        </p>
+                                        <p className='px-2 absolute bottom-0 font-medium text-gray-600 text-sm'>
+                                            <span className="font-semibold">Uploaded By:</span> {item.name}
+                                        </p>
+                                    </div>
                                 </div>
-                                {item.url && <img src={item.url} alt="image" className='rounded-lg w-full h-52 object-cover' />}
-                                {item.article && <p className={`folded-paper article p-4 overflow-scroll rounded-lg w-full h-52 bg-[${item.bgColor}]`}>
-                                    {item.article}
-                                </p>}
-                                <div>
-                                    <p className="text-gray-600 mb-2 font-medium">{item.description.length > 40 ? item.description.slice(0, 40) + "..." : item.description}</p>
-                                    <p className='font-medium text-gray-600 text-xs'>Uploaded By: {item.name}</p>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        chooseUpload ||
-                        <div className='space-y-20 md:space-y-0'>
-                            <img src='./images/posts.png' alt='Tech Videos' className='w-[80%] lg:w-[50%] mx-auto' />
-                            <h1 className='text-black text-center text-2xl font-bold mt-4'>No Image or Article Posted Yet.</h1>
+                            ))}
                         </div>
+                    ) : (
+                        !chooseUpload && (
+                            <div className='flex flex-col items-center text-center space-y-8 py-12'>
+                                <img src='./images/posts.png' alt='No Posts' className='w-[60%] lg:w-[40%] mx-auto' />
+                                <h1 className='text-black text-2xl font-bold'>No Image or Article Posted Yet</h1>
+                                <p className='text-gray-600'>Start sharing your thoughts and media with the world!</p>
+                            </div>
+                        )
                     )}
-                </section>
+                </section>}
 
                 {chooseUpload && !isArticleUploading && !isImageUploading ? (
                     <div className='w-full min-h-screen flex justify-center items-baseline pt-20  '>

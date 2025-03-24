@@ -1,9 +1,10 @@
 import Header from '../Header/Header'
 import Footer from '../Footer/Footer'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAdd, faClose } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
+import MyContentLoader from '../Content_Loader/ContentLoader'
 
 function TechVideos() {
     const {
@@ -15,14 +16,24 @@ function TechVideos() {
     } = useForm();
 
     const [videos, setVideos] = useState([]);
+    const [video, setVideo] = useState("");
     const [addVideo, setAddVideo] = useState(false);
     const [preview, setPreview] = useState("");
+    const [thubmnailpreview, setThumbnailPreview] = useState("");
     const selectedFile = watch("uploadvideo");
-    const [fileMeta, setFileMeta] = useState(null)
+    let selectedThumbNail = watch("uploadthumbnail");
+    const [fileMeta, setFileMeta] = useState(null);
+    const [thumbnailfileMeta, setThumbNailFileMeta] = useState(null);
     const [progress, setProgress] = useState(null);
+    const videoRef = useRef()
+    const streamvideo = useRef()
+    const [duration, setDuration] = useState(null);
+    const [durationpreview, setDurationPreview] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (selectedFile && selectedFile.length > 0) {
+            console.log(selectedFile)
             const url = URL.createObjectURL(selectedFile[0]);
             setFileMeta(selectedFile[0])
             setPreview(url);
@@ -30,11 +41,48 @@ function TechVideos() {
         }
     }, [selectedFile]);
 
+    useEffect(() => {
+        if (selectedThumbNail && selectedThumbNail.length > 0) {
+            const url = URL.createObjectURL(selectedThumbNail[0]);
+            setThumbNailFileMeta(selectedThumbNail[0])
+            setThumbnailPreview(url);
+            console.log(url)
+        }
+    }, [selectedThumbNail]);
+
+
 
     useEffect(() => {
-        async function fetchVideos() {
+        if (videoRef.current) {
+            videoRef.current.onloadedmetadata = () => {
+                setDuration(videoRef.current.duration);
+                console.log("Video Duration:", videoRef.current.duration, "seconds");
+            };
+        }
+    }, [preview]);
+
+    useEffect(() => {
+        if (duration > 180) {
+            alert("Provide Video Within in 180 Seconds.")
+            videoRef.current = null
+            setPreview("");
+            selectedThumbNail = null;
+            window.location.reload()
+        }
+        else {
+            function convertSeconds(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = (seconds % 60).toFixed(0);
+                return `${minutes}:${remainingSeconds}`;
+            }
+            setDurationPreview(convertSeconds(duration));;
+        }
+    }, [duration])
+
+    useEffect(() => {
+        async function fetchVideosInfo() {
             try {
-                const response = await fetch("http://localhost:3000/techvideos");
+                const response = await fetch("http://localhost:3000/techvideosinfo");
 
                 const data = await response.json();
                 console.log(data)
@@ -44,10 +92,27 @@ function TechVideos() {
             } catch (error) {
                 console.error("Error fetching videos:", error);
             }
-        }
 
-        fetchVideos();
+        }
+        fetchVideosInfo();
     }, []);
+
+
+    function handleMouseOver(filename) {
+        try {
+            setLoading(true)
+            setVideo(`http://localhost:3000/techvideos/${filename}`)
+        } catch (error) {
+            console.error("Error fetching videos:", error);
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
+    function handleMouseOut() {
+        setVideo("")
+    }
 
     function handleAddVideo() {
         setAddVideo(true);
@@ -71,10 +136,11 @@ function TechVideos() {
             formData.append("chunkIndex", chunkIndex);
             formData.append("totalChunks", totalChunks);
             formData.append("fileName", fileMeta.name);
+            formData.append("thumbNail", thumbnailfileMeta);
             formData.append("title", data.uploadtitle);
             formData.append("description", data.uploaddescription)
             formData.append("name", name);
-
+            formData.append("duration", durationpreview);
             const response = await fetch("http://localhost:3000/uploadvideos", {
                 method: "POST",
                 body: formData
@@ -82,10 +148,10 @@ function TechVideos() {
 
             const result = await response.json();
             console.log(result)
-            if (result.message == "Video Posted!") {
+            if (result.message == "Video and thumbnail uploaded successfully!") {
                 setAddVideo(false)
-                window.location.reload(),
-                    setValue("uploadtitle", "")
+                window.location.reload()
+                setValue("uploadtitle", "")
                 setValue("uploaddescription", "")
                 setValue("uploadvideo", "")
             }
@@ -106,46 +172,49 @@ function TechVideos() {
                 </section>
 
                 {/* Videos Section */}
-                <section className="relative w-full mt-32 md:mt-20 px-6">
-                    {videos.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 py-8 w-full">
-                            {videos.map((data, index) => (
-                                <div
-                                    key={index}
-                                    className="bg-white rounded overflow-hidden transition-transform duration-300 transform hover:scale-105"
-                                >
-                                    <div className="relative group">
-                                        <video controls className="rounded-xl w-full h-50 object-cover">
-                                            <source src={data.url} type="video/mp4" />
-                                            Your browser does not support the video tag.
-                                        </video>
+                {loading ? <MyContentLoader /> :
+                    <section className="relative w-full mt-32 md:mt-20 px-6">
+                        {videos.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 py-8 w-full">
+                                {videos.map((data, index) => (
+                                    <div
+                                        key={index}
+                                        className="cursor-default bg-white rounded overflow-hidden transition-transform duration-300 transform hover:scale-105"
+                                    >
+                                        <div className="cursor-pointer relative group" onMouseOver={() => handleMouseOver(data.filename)} onMouseOut={handleMouseOut}>
+                                            {video === `http://localhost:3000/techvideos/${data.filename}` ? (
+                                                <video ref={streamvideo} src={video} controls autoPlay className="rounded-xl w-full h-50 object-cover"></video>
+                                            ) : (
+                                                <>
+                                                    <img src={data.thumbnail} className="rounded-xl w-full h-50 object-cover" />
+                                                    <p className='bg-black opacity-80 absolute bottom-2 right-2 text-right text-white px-2 rounded-lg text-xs py-1'>{data.duration}</p>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className="py-5">
+                                            <h2 className="text-lg font-semibold text-gray-900 mb-0">{data.title}</h2>
+                                            <p className=" line-clamp-2 text-sm text-gray-600 mb-2 font-medium">
+                                                {data.description}
+                                            </p>
+
+                                            <p className="font-medium text-sm text-gray-700">
+                                                <span className=" text-gray-600">Uploaded By: </span>
+                                                <span className="text-gray-600">{data.name}</span>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="p-5">
-                                        <h2 className="text-lg font-semibold text-gray-900 mb-0">{data.title}</h2>
-
-
-                                        <p className=" line-clamp-2 text-gray-600 mb-2 font-medium">
-                                           {data.description}
-                                        </p>
-
-                                        <p className="font-medium text-sm text-gray-700">
-                                            <span className=" text-gray-600">Uploaded By: </span>
-                                            <span className="text-gray-600">{data.name}</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        !addVideo && (
-                            <div className="flex flex-col items-center text-center space-y-6 py-12">
-                                <img src="./images/techvideos.png" alt="Tech Videos" className="w-[60%] lg:w-[40%] mx-auto" />
-                                <h1 className="text-gray-800 text-2xl font-bold">No Videos Posted Yet</h1>
-                                <p className="text-gray-600">Be the first to upload and share your knowledge!</p>
+                                ))}
                             </div>
-                        )
-                    )}
-                </section>
+                        ) : (
+                            !addVideo && (
+                                <div className="flex flex-col items-center text-center space-y-6 py-12">
+                                    <img src="./images/techvideos.png" alt="Tech Videos" className="w-[60%] lg:w-[40%] mx-auto" />
+                                    <h1 className="text-gray-800 text-2xl font-bold">No Videos Posted Yet</h1>
+                                    <p className="text-gray-600">Be the first to upload and share your knowledge!</p>
+                                </div>
+                            )
+                        )}
+                    </section>}
 
             </div>
 
@@ -183,7 +252,7 @@ function TechVideos() {
                                     rows={4}
                                     name="uploaddescription"
                                     id="uploaddescription"
-                                    className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                    className="line-clamp-2 w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
                                     placeholder="Enter video description"
                                     {...register("uploaddescription", { required: "Please Provide Description of Video" })}
                                 ></textarea>
@@ -212,7 +281,31 @@ function TechVideos() {
                             {/* Video Preview */}
                             {preview && (
                                 <div className="mt-4">
-                                    <video src={preview} controls className="w-full rounded-lg border border-[#d0b797] shadow-md"></video>
+                                    <video ref={videoRef} src={preview} controls className="w-full rounded-lg border border-[#d0b797] shadow-md"></video>
+                                </div>
+                            )}
+
+                            <div className="mb-4">
+                                <label htmlFor="uploadthumbnail" className="block text-[#8a6f47] font-medium">Select Thumbnail:</label>
+
+                                {/* Custom File Input Button */}
+                                <label
+                                    htmlFor="uploadthumbnail"
+                                    className="mt-2 block w-full text-center bg-[#d0b797] text-white py-2 rounded-lg cursor-pointer hover:bg-[#8a6f47] transition"
+                                >
+                                    Choose File
+                                </label>
+                                <input type="file" accept='image/*' name="uploadthumbnail" id="uploadthumbnail" className="hidden"
+                                    {...register("uploadthumbnail", { required: "Please Select One Thumbnail" })}
+                                />
+
+                                {errors.uploadthumbnail && <p className="text-red-500 text-sm">{errors.uploadthumbnail.message}</p>}
+                            </div>
+
+                            {/* Video Preview */}
+                            {thubmnailpreview && (
+                                <div className="mt-4">
+                                    <img src={thubmnailpreview} className="w-full rounded-lg border border-[#d0b797] shadow-md" />
                                 </div>
                             )}
 

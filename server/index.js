@@ -222,7 +222,8 @@ app.get('/contactusmessages', async (request, response) => {
     }
 
 })
-app.get("/techvideos", async (request, response) => {
+
+app.get("/techvideosinfo", async (request, response) => {
     try {
         const db = client.db(dbName);
         const data = await db.collection("techVideos").find().sort({ createdAt: -1 }).toArray();
@@ -233,7 +234,7 @@ app.get("/techvideos", async (request, response) => {
                 return null;
             }
 
-            return { id: item._id, url: `http://localhost:3000/uploads/${item.filename}`, name: item.name, title: item.title, description: item.description };
+            return { filename: item.filename, thumbnail: `http://localhost:3000/uploads/${item.thumbnail}`, id: item._id, name: item.name, title: item.title, description: item.description, duration: item.duration };
 
         }).filter(Boolean);
 
@@ -246,6 +247,37 @@ app.get("/techvideos", async (request, response) => {
         response.status(500).json({ message: "Internal Server Error", error });
     }
 });
+
+app.get("/techvideos/:filename", (request, response) => {
+    const filename = request.params.filename
+
+    const videoPath = path.join(__dirname, "uploads", filename);
+    const stat = fs.statSync(videoPath);
+    const fileSize = stat.size;
+
+    const range = request.headers.range;
+    if (!range) {
+        return response.status(400).send("Requires Range header");
+    }
+
+    const CHUNK_SIZE = 2 * 1024 * 1024;
+    const start = Number(range.replace(/\D/g, ""));
+    const end = Math.min(start + CHUNK_SIZE, fileSize - 1);
+    const contentLength = end - start + 1;
+
+    const headers = {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": contentLength,
+        "Content-Type": "video/mp4",
+    };
+
+    response.writeHead(206, headers);
+
+    const videoStream = fs.createReadStream(videoPath, { start, end });
+    videoStream.pipe(response);
+});
+
 
 app.get('/techposts', async (request, response) => {
     const db = client.db(dbName);
@@ -334,54 +366,58 @@ app.delete('/deletevideo', async (request, response) => {
 
 })
 
-app.post('/uploadvideos', upload.single("videoChunk"), async (request, response) => {
+app.post('/uploadvideos', upload.fields([
+    { name: "videoChunk", maxCount: 1 },  // Video file
+    { name: "thumbNail", maxCount: 1 }   // Thumbnail image
+]), async (request, response) => {
     try {
-        const { chunkIndex, totalChunks, fileName, title, description, name } = request.body;
+        const { chunkIndex, totalChunks, fileName, title, description, name, duration } = request.body;
 
-        const chunk = request.file.path;
+        // Check if files exist
+        if (!request.files || !request.files.videoChunk || !request.files.thumbNail) {
+            return response.status(400).send({ message: "Both video and thumbnail are required." });
+        }
+
+        const videoFile = request.files.videoChunk[0];
+        const thumbFile = request.files.thumbNail[0];
+
         const ext = path.extname(fileName);
         const baseName = path.basename(fileName, ext);
 
+        const finalFilename = `${baseName}-final${ext}`;
+        const finalFilePath = path.join(uploadDir, finalFilename);
 
-        const filename = `${baseName}-final${ext}`;
-        const finalFilePath = path.join(uploadDir, filename);
-
-        const data = await fs.promises.readFile(chunk).catch(err => {
-            console.error("Error reading chunk:", err);
-            return response.status(500).send({ message: "Failed to read video chunk." });
-        });
-
-        await fs.promises.appendFile(finalFilePath, data).catch(err => {
-            console.error("Error appending chunk:", err);
-            return response.status(500).send({ message: "Failed to append video chunk." });
-        });
-
-        await fs.promises.unlink(chunk).catch(err => {
-            console.error("Error deleting chunk:", err);
-        });
+        const chunkData = await fs.promises.readFile(videoFile.path);
+        await fs.promises.appendFile(finalFilePath, chunkData);
+        await fs.promises.unlink(videoFile.path);
 
         if (parseInt(chunkIndex) === parseInt(totalChunks) - 1) {
-            console.log("Upload completed for:", filename);
+            console.log("Upload completed for:", finalFilename);
 
             const db = client.db(dbName);
             const storeVideoInfo = await db.collection("techVideos").insertOne({
-                title, description, name, filename, createdAt: Date.now()
+                title,
+                description,
+                name,
+                filename: finalFilename,
+                thumbnail: thumbFile.filename,
+                createdAt: Date.now(),
+                duration
             });
 
             if (storeVideoInfo.acknowledged) {
-                return response.status(200).send({ message: "Video Posted!" });
+                return response.status(200).send({ message: "Video and thumbnail uploaded successfully!" });
             }
         } else {
             return response.status(200).send({
                 progress: Math.round(((parseInt(chunkIndex) + 1) / parseInt(totalChunks)) * 100)
             });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         response.status(500).send({ message: "Internal Server Error" });
     }
-})
+});
 
 app.post('/uploadpost', upload.single('postImage'), async (request, response) => {
     const db = client.db(dbName);

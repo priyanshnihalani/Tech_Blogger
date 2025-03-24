@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAdd, faClose } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
 import './techPosts.css'
+import MyContentLoader from '../Content_Loader/ContentLoader'
 
 function TechPosts() {
     const [posts, setPosts] = useState([])
@@ -15,7 +16,7 @@ function TechPosts() {
     const [content, setContent] = useState(null);
     const [preview, setPreview] = useState(null);
     const [fileMeta, setFileMeta] = useState(null)
-
+    const [loading, setLoading] = useState(false)
 
     const {
         register,
@@ -38,11 +39,20 @@ function TechPosts() {
 
     useEffect(() => {
         async function fetchPosts() {
-            const response = await fetch('http://localhost:3000/techposts')
-            const data = await response.json()
-            console.log(data)
-            if (data.message !== 'No posts found') {
-                setPosts(data.data)
+            try{
+                setLoading(true)
+                const response = await fetch('http://localhost:3000/techposts')
+                const data = await response.json()
+                console.log(data)
+                if (data.message !== 'No posts found') {
+                    setPosts(data.data)
+                }
+            }
+            catch(error){
+                alert(error)
+            }
+            finally{
+                setLoading(false)
             }
         }
         fetchPosts()
@@ -113,7 +123,7 @@ function TechPosts() {
                     </button>
                 </section>
 
-                <section className='flex flex-col items-center lg:flex-row flex-wrap relative w-full lg:w-3/4 xl:w-[100%] mt-32 md:mt-20 px-4'>
+                {loading ? <MyContentLoader /> : <section className='flex flex-col items-center lg:flex-row flex-wrap relative w-full lg:w-3/4 xl:w-[100%] mt-32 md:mt-20 px-4'>
                     {posts.length > 0 && !chooseUpload ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 space-x-2 w-full">
                             {posts.map((item, index) => (
@@ -147,7 +157,7 @@ function TechPosts() {
                             </div>
                         )
                     )}
-                </section>
+                </section>}
 
                 {chooseUpload && !isArticleUploading && !isImageUploading ? (
                     <div className='w-full min-h-screen flex justify-center items-baseline pt-20  '>

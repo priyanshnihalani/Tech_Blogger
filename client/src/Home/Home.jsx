@@ -68,7 +68,7 @@ function Home() {
                     </div>
                 </section>
 
-                <div className="mt-4 bottom-0 w-full px-0">
+                <div className="mt-0 bottom-0 w-full px-0">
                     <Footer />
                 </div>
             </div>
