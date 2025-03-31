@@ -54,8 +54,8 @@ function TechTutorial() {
             <Header />
             <div className='w-full min-h-screen  text-white flex flex-col items-center'>
 
-                <section className='relative w-full max-w-screen-lg py-6'>
-                    <button className='cursor-pointer absolute top-4 sm:top-5 right-5 lg:right-0 bg-[#d0b797] space-x-2 text-white p-4 rounded text-xs' onClick={() => setUpload(true)}>
+                <section className='relative w-full max-w-screen py-6'>
+                    <button className='cursor-pointer absolute top-4 sm:top-5 right-5 lg:right-10 bg-[#23528a] space-x-2 text-white p-4 rounded text-xs' onClick={() => setUpload(true)}>
                         <FontAwesomeIcon icon={faAdd} />
                         <span className='font-bold'>Add Tutorial Link</span>
                     </button>
@@ -82,7 +82,7 @@ function TechTutorial() {
                                               <p className="text-sm text-gray-600">Uploaded By: {item.name}</p>
                                               <button
                                                   onClick={() => window.open(item.url, "_blank")}
-                                                  className="cursor-pointer mt-3 sm:mt-0 bg-[#d0b797] text-white px-5 py-2 rounded-md hover:bg-[#857765] transition-colors"
+                                                  className="cursor-pointer mt-3 sm:mt-0 bg-[#23528a] text-white px-5 py-2 rounded-md hover:bg-[#7494bb] transition-colors"
                                               >
                                                   Visit
                                               </button>
@@ -103,22 +103,22 @@ function TechTutorial() {
                     <div className='bg-[#f5ebe0] w-full text-black'>
 
                         <div className="absolute top-20 md:top-0 w-full flex justify-center items-center min-h-screen p-6">
-                            <form method="post" onSubmit={handleSubmit(submitLink)} className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-[#d0b797]">
+                            <form method="post" onSubmit={handleSubmit(submitLink)} className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-[#23528a]">
                                 <div className='flex justify-between py-4'>
 
-                                    <h2 className="text-center text-2xl font-semibold text-[#8a6f47] mb-4">Upload Link</h2>
+                                    <h2 className="text-center text-2xl font-semibold text-[#23528a] mb-4">Upload Link</h2>
                                     <div className='cursor-pointer' onClick={() => setUpload(false)}>
                                         <FontAwesomeIcon icon={faClose} />
                                     </div>
                                 </div>
                                 {/* Title */}
                                 <div className="mb-4">
-                                    <label htmlFor="uploadtitle" className="block text-[#8a6f47] font-medium">Title:</label>
+                                    <label htmlFor="uploadtitle" className="block text-[#23528a] font-medium">Title:</label>
                                     <input
                                         type="text"
                                         name="uploadtitle"
                                         id="uploadtitle"
-                                        className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                        className="w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                         placeholder="Enter Tutorial Title"
 
                                         {...register("uploadtitle", { required: "Please Provide Title related to Link" })}
@@ -127,12 +127,12 @@ function TechTutorial() {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label htmlFor="uploadlink" className="block text-[#8a6f47] font-medium">Link:</label>
+                                    <label htmlFor="uploadlink" className="block text-[#23528a] font-medium">Link:</label>
                                     <input
                                         type="text"
                                         name="uploadlink"
                                         id="uploadlink"
-                                        className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                        className="w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                         placeholder="Enter Tutorial Link"
 
                                         {...register("uploadlink", {
@@ -148,12 +148,12 @@ function TechTutorial() {
 
                                 {/* Description */}
                                 <div className="mb-4">
-                                    <label htmlFor="uploaddescription" className="block text-[#8a6f47] font-medium">Description:</label>
+                                    <label htmlFor="uploaddescription" className="block text-[#23528a] font-medium">Description:</label>
                                     <textarea
                                         rows={4}
                                         name="uploaddescription"
                                         id="uploaddescription"
-                                        className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                        className="w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                         placeholder="Enter Tutorial Description"
                                         {...register("uploaddescription", { required: "Please Provide Description related to Link." })}
                                     ></textarea>
@@ -165,7 +165,7 @@ function TechTutorial() {
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
-                                    className="w-full mt-4 bg-[#8a6f47] text-white py-2 rounded-lg font-semibold hover:bg-[#6d5733] transition"
+                                    className="w-full mt-4 bg-[#23528a] text-white py-2 rounded-lg font-semibold hover:bg-[#829ec0] transition"
                                 >
                                     {"Upload Link"}
                                 </button>

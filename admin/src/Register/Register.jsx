@@ -87,7 +87,7 @@ function Register() {
                         />
                         {errors.confirmpassword && <p className="text-red-500 text-xs">{errors.confirmpassword.message}</p>}
                     </div>
-                    <button type="submit" className="mt-4 w-1/4 bg-[#d0b797] hover:bg-gray-800 text-white font-bold py-2 px-2 rounded-lg ">Signup</button>
+                    <button type="submit" className="mt-4 w-1/4 bg-[#23528a] hover:bg-gray-800 text-white font-bold py-3 px-2 rounded ">Signup</button>
                 </div>
             </form>
         </>

@@ -4,7 +4,7 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/f
 
 function Footer() {
     return (
-        <footer className="shadow bg-gray-100 px-6 py-8 text-center">
+        <footer className="shadow bg-gray-600 text-white px-6 py-8 text-center">
             <div className="container mx-auto flex flex-wrap justify-center gap-12 md:justify-between lg:space-x-20">
                 
                 {/* Tech Blogger Section */}

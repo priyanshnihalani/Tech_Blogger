@@ -9,9 +9,9 @@ import fs from 'fs'
 import { fileURLToPath } from 'url';
 
 const app = express();
+app.use(express.json());
 
 const jsonsecretkey = "webstoresecret";
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const __filename = fileURLToPath(import.meta.url);
@@ -448,6 +448,25 @@ app.post('/uploadpost', upload.single('postImage'), async (request, response) =>
     }
 })
 
+app.get('/alldata', async (request, response) => {
+
+    try {
+
+        const db = client.db(dbName)
+        const comments = await db.collection("contactmessages").countDocuments()
+        const techVideos = await db.collection("techVideos").countDocuments()
+        const techPosts = await db.collection("techPosts").countDocuments()
+        const techTutorials = await db.collection("techtutorials").countDocuments()
+        const users = await db.collection("users").countDocuments()
+
+        response.send({ message: "Success!", comments, techPosts, techVideos, techTutorials, users })
+    }
+    catch (error) {
+        console.log(error)
+        response.status(500).send({ message: "Internal Server Error!" })
+    }
+
+})
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });

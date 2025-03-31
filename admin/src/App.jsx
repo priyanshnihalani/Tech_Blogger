@@ -4,7 +4,7 @@ import Home from './Home/Home'
 import ContactUs from './ContactUs/ContactUs'
 import LoginRegister from './Register/LoginRegister'
 import TechVideos from './TechVideos/techVideos'
-import TechPosts from './TechPosts/techPosts'
+import TechPosts from './TechPost/techPosts'
 import TechTutorial from './TechTutorial/techTutorial'
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Route path='/register' element={<LoginRegister />} />
         <Route path='/techvideos' element={<TechVideos />} />
         <Route path='/techpost' element={<TechPosts />} />
-        <Route path='/techtutorials' element={<TechTutorial />} />
+        <Route path='/techtutorial' element={<TechTutorial />} />
       </Routes>
     </Router>
    </>

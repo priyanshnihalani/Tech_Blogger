@@ -39,7 +39,7 @@ function TechPosts() {
 
     useEffect(() => {
         async function fetchPosts() {
-            try{
+            try {
                 setLoading(true)
                 const response = await fetch('http://localhost:3000/techposts')
                 const data = await response.json()
@@ -48,10 +48,10 @@ function TechPosts() {
                     setPosts(data.data)
                 }
             }
-            catch(error){
+            catch (error) {
                 alert(error)
             }
-            finally{
+            finally {
                 setLoading(false)
             }
         }
@@ -116,34 +116,37 @@ function TechPosts() {
             <Header />
             <div className='w-full min-h-screen  text-white flex flex-col items-center'>
                 {/* Video Add Section */}
-                <section className='relative w-full max-w-screen-lg py-6'>
-                    <button className='cursor-pointer absolute top-4 sm:top-5 right-5 lg:right-0 bg-[#d0b797] space-x-2 text-white p-4 rounded text-xs' onClick={() => setChooseUpload(true)}>
+                <section className='relative w-full  py-6'>
+                    <button className='cursor-pointer absolute top-4 sm:top-5 right-5 lg:right-10 bg-[#23528a] space-x-2 text-white p-4 rounded text-xs' onClick={() => setChooseUpload(true)}>
                         <FontAwesomeIcon icon={faAdd} />
                         <span className='font-bold'>Add Image or Article</span>
                     </button>
                 </section>
 
-                {loading ? <MyContentLoader /> : <section className='flex flex-col items-center lg:flex-row flex-wrap relative w-full lg:w-3/4 xl:w-[100%] mt-32 md:mt-20 px-4'>
+                {loading ? <MyContentLoader /> : <section className='flex flex-col items-center lg:flex-row flex-wrap relative w-full lg:w-3/4 xl:w-[100%] mt-32 md:mt-20  px-4'>
                     {posts.length > 0 && !chooseUpload ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 space-x-2 w-full">
+                        <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-4 space-y-4 md:space-y-0 space-x-2 w-full">
                             {posts.map((item, index) => (
-                                <div key={index} className=' bg-white  rounded-lg overflow-hidden py-5 px-2  transition-transform duration-300 hover:scale-105'>
-                                    <h2 className='text-lg font-semibold text-gray-900 mb-3'>{item.title}</h2>
+                                <div key={index} className='shadow bg-white  rounded overflow-hidden py-5 px-2  transition-transform duration-300 hover:scale-105'>
+
                                     {item.url && (
-                                        <img src={item.url} alt="Post Image" className='rounded-lg w-full h-50 object-cover' />
+                                        <img src={item.url} alt="Post Image" className='rounded w-full h-50 object-cover' />
                                     )}
                                     {item.article && (
-                                        <div className={`folded-paper p-4  rounded-lg w-full h-50 flex items-center justify-center text-white font-medium text-sm shadow-md inset-shadow-emerald-50`} style={{ backgroundColor: item.bgColor }}>
+                                        <div className={`folded-paper p-4  rounded w-full h-50 flex items-center justify-center text-white font-medium text-sm shadow-md inset-shadow-emerald-50`} style={{ backgroundColor: item.bgColor }}>
                                             <p className='line-clamp-6 text-center'>{item.article}</p>
                                         </div>
                                     )}
                                     <div className='mt-4'>
-                                        <p className="px-2 line-clamp-2 text-gray-600 mb-2 font-medium">
-                                            {item.description}
-                                        </p>
-                                        <p className='px-2 absolute bottom-0 font-medium text-gray-600 text-sm'>
-                                            <span className="font-semibold">Uploaded By:</span> {item.name}
-                                        </p>
+                                        <h2 className='px-4 text-lg font-semibold text-gray-900 mb-1'>{item.title}</h2>
+                                        <div className='px-2 border-t border-black pt-2'>
+                                            <p className="px-2 line-clamp-2 text-gray-600 mb-2 font-medium">
+                                                {item.description}
+                                            </p>
+                                            <p className='px-2  font-medium text-gray-600 text-sm'>
+                                                <span className="font-semibold">Uploaded By:</span> {item.name}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -176,7 +179,7 @@ function TechPosts() {
 
             </div>
 
-            {isArticleUploading && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-3/4 lg:w-1/2 xl:w-1/3 rounded-2xl bg-white shadow-lg my-2 p-6 mx-auto">
+            {isArticleUploading && <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full md:w-3/4 lg:w-1/2 xl:w-1/3 rounded-2xl bg-white shadow-lg my-40 md:my-30 lg:my-20 p-6 mx-auto">
                 <div className='flex justify-between items-center'>
 
                     <h2 className="text-xl font-semibold mb-4">Write Your Article</h2>
@@ -217,7 +220,7 @@ function TechPosts() {
                         {...register("uploaddescription", { required: "Please Provide  Description of Article" })}
                     ></textarea>
                     {errors.uploaddescription && <p className="text-red-500 text-sm">{errors.uploaddescription.message}</p>}
-                    <button type="submit" className="px-4 py-2 bg-[#d0b797] text-white rounded">
+                    <button type="submit" className="px-4 py-2 bg-[#23528a] text-white rounded">
                         Upload Article
                     </button>
                 </form>
@@ -226,23 +229,23 @@ function TechPosts() {
             {isImageUploading && (
                 <div className='bg-[#f5ebe0] w-full'>
 
-                    <div className="absolute top-20 md:top-0 w-full flex justify-center items-center min-h-screen p-6">
-                        <form method="post" onSubmit={handleSubmit(submitPhoto)} className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-[#d0b797]">
+                    <div className="absolute top-20 md:top-0 w-full flex justify-center items-center min-h-screen p-6 my-40 md:my-30 lg:my-20">
+                        <form method="post" onSubmit={handleSubmit(submitPhoto)} className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-[#23528a]">
                             <div className='flex justify-between py-4'>
 
-                                <h2 className="text-center text-2xl font-semibold text-[#8a6f47] mb-4">Upload Photo</h2>
+                                <h2 className="text-center text-2xl font-semibold text-[#23528a] mb-4">Upload Photo</h2>
                                 <div className='cursor-pointer' onClick={() => setIsImageUploading(false)}>
                                     <FontAwesomeIcon icon={faClose} />
                                 </div>
                             </div>
                             {/* Title */}
                             <div className="mb-4">
-                                <label htmlFor="uploadtitle" className="block text-[#8a6f47] font-medium">Title:</label>
+                                <label htmlFor="uploadtitle" className="block text-[#23528a] font-medium">Title:</label>
                                 <input
                                     type="text"
                                     name="uploadtitle"
                                     id="uploadtitle"
-                                    className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                    className="w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                     placeholder="Enter photo title"
 
                                     {...register("uploadtitle", { required: "Please Provide Title of Photo" })}
@@ -252,12 +255,12 @@ function TechPosts() {
 
                             {/* Description */}
                             <div className="mb-4">
-                                <label htmlFor="uploaddescription" className="block text-[#8a6f47] font-medium">Description:</label>
+                                <label htmlFor="uploaddescription" className="block text-[#23528a] font-medium">Description:</label>
                                 <textarea
                                     rows={4}
                                     name="uploaddescription"
                                     id="uploaddescription"
-                                    className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                    className="w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                     placeholder="Enter photo description"
                                     {...register("uploaddescription", { required: "Please Provide Description of Photo" })}
                                 ></textarea>
@@ -266,11 +269,11 @@ function TechPosts() {
                             </div>
 
                             <div className="mb-4">
-                                <label htmlFor="uploadphoto" className="block text-[#8a6f47] font-medium">Select Photo:</label>
+                                <label htmlFor="uploadphoto" className="block text-[#23528a] font-medium">Select Photo:</label>
 
                                 <label
                                     htmlFor="uploadphoto"
-                                    className="mt-2 block w-full text-center bg-[#d0b797] text-white py-2 rounded-lg cursor-pointer hover:bg-[#8a6f47] transition"
+                                    className="mt-2 block w-full text-center bg-[#23528a] text-white py-2 rounded-lg cursor-pointer hover:bg-[#23528a] transition"
                                 >
                                     Choose File
                                 </label>
@@ -284,14 +287,14 @@ function TechPosts() {
                             {/* Image Preview */}
                             {preview && (
                                 <div className="mt-4">
-                                    <img src={preview} controls className="w-full rounded-lg border border-[#d0b797] shadow-md" />
+                                    <img src={preview} controls className="w-full rounded-lg border border-[#23528a] shadow-md" />
                                 </div>
                             )}
 
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                className="w-full mt-4 bg-[#8a6f47] text-white py-2 rounded-lg font-semibold hover:bg-[#6d5733] transition"
+                                className="w-full mt-4 bg-[#23528a] text-white py-2 rounded-lg font-semibold hover:bg-[#23528a] transition"
                             >
                                 {"Upload Photo"}
                             </button>

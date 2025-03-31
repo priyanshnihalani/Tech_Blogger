@@ -1,10 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
+import { useNavigate } from "react-router-dom";
+import Footer from "../Footer/Footer.jsx";
 
 function LoginRegister() {
-    const [account, setAccount] = useState("register");
 
+    useEffect(() => {
+        let data = localStorage.getItem('accesstoken')
+        let data1 = localStorage.getItem('id')
+        let data2 = localStorage.getItem('name')
+
+        if(data && data1 && data2){
+            navigate('/')
+        }
+
+    }, [])
+    const [account, setAccount] = useState("register");
+    const navigate = useNavigate()
     function handleRegisterClick() {
         setAccount("register");
     }
@@ -14,37 +27,43 @@ function LoginRegister() {
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col md:flex-row justify-center items-center px-6 md:px-20 lg:px-40 py-10 ">
-            {/* Image Section */}
-            <div className="hidden md:block w-1/2">
-                <img src="./images/account.png" alt="Contact Us" className="w-full max-w-md mx-auto" />
-                <p className="text-gray-600 text-center mt-4 italic">"Connect with us for seamless account management."</p>
+        <>
+            <div className="flex justify-between w-full items-center bg-gray-600 text-white py-3 px-8">
+                <h1 className="font-black text-2xl">Tech Blogger</h1>
+                <h1 className="font-medium">Need Help? <span onClick={() => navigate('/contactus')} className="underline cursor-pointer"> Contact Us</span></h1>
             </div>
+            <div className="min-h-screen w-full flex flex-col space-y-20 justify-center items-center px-6 md:px-20 lg:px-40 py-0 ">
 
-            {/* Form Section */}
-            <div className="w-full md:w-1/2 max-w-md shadow-lg bg-white p-6 rounded-lg">
-                {/* Toggle Buttons */}
-                <div className="flex justify-around items-center w-full space-x-4 font-medium text-md bg-gray-200 p-1 rounded-lg">
-                    <button
-                        onClick={handleRegisterClick}
-                        className={account === "register" ? "transition ease-in-out bg-[#d0b797] text-white w-1/2 shadow-sm p-2 rounded-md" : "w-1/2 p-2"}
-                    >
-                        Sign Up
-                    </button>
-                    <button
-                        onClick={handleLoginClick}
-                        className={account === "login" ? "transition ease-in-out bg-[#d0b797] text-white w-1/2 shadow-sm p-2 rounded-md" : "w-1/2 p-2"}
-                    >
-                        Sign In
-                    </button>
-                </div>
 
-                {/* Content Area */}
-                <div className="w-full mt-6 flex items-center justify-center overflow-hidden">
-                    {account === "login" ? <Login /> : <Register />}
+                {/* Form Section */}
+                <div className="w-full md:w-1/2 max-w-md shadow-lg bg-white p-6 rounded">
+                    {/* Toggle Buttons */}
+                    <div className="flex justify-around items-center w-full space-x-4 font-medium text-md bg-gray-200 p-0 rounded">
+                        <button
+                            onClick={handleRegisterClick}
+                            className={account === "register" ? "transition ease-in-out bg-[#23528a] text-white w-1/2 shadow-sm p-2 rounded-sm" : "w-1/2 p-2"}
+                        >
+                            Sign Up
+                        </button>
+                        <button
+                            onClick={handleLoginClick}
+                            className={account === "login" ? "transition ease-in-out bg-[#23528a] text-white w-1/2 shadow-sm p-2 rounded-sm" : "w-1/2 p-2"}
+                        >
+                            Sign In
+                        </button>
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="w-full mt-6 flex items-center justify-center overflow-hidden">
+                        {account === "login" ? <Login /> : <Register />}
+                    </div>
                 </div>
+                <p className="w-3/4">
+                    "Stay ahead in the tech world with Tech Blogging! Our platform connects you with insightful articles, industry trends, and discussions that fuel innovation. From coding tutorials to AI advancements, there’s always something new to learn. Join us today and start your tech journey!"
+                </p>
             </div>
-        </div>
+            <Footer />
+        </>
     );
 }
 

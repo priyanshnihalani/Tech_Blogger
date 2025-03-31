@@ -161,11 +161,10 @@ function TechVideos() {
 
     return (
         <>
-            <Header />
             <div className='w-full min-h-screen  text-white flex flex-col items-center'>
                 {/* Video Add Section */}
-                <section className='relative w-full max-w-screen-lg py-6'>
-                    <button className='cursor-pointer absolute top-4 sm:top-5 right-5 sm:right-10 bg-[#d0b797] space-x-2 text-white p-4 rounded text-xs' onClick={handleAddVideo}>
+                <section className='relative w-full max-w-screen py-6'>
+                    <button className='cursor-pointer absolute top-4 sm:top-10 right-5 sm:right-10 bg-[#23528a] space-x-2 text-white p-4 rounded text-xs' onClick={handleAddVideo}>
                         <FontAwesomeIcon icon={faAdd} />
                         <span className='font-bold'> Add Video</span>
                     </button>
@@ -175,36 +174,57 @@ function TechVideos() {
                 {loading ? <MyContentLoader /> :
                     <section className="relative w-full mt-32 md:mt-20 px-6">
                         {videos.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 py-8 w-full">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 py-10 w-full">
                                 {videos.map((data, index) => (
                                     <div
                                         key={index}
-                                        className="cursor-default bg-white rounded overflow-hidden transition-transform duration-300 transform hover:scale-105"
+                                        className="cursor-default bg-white rounded overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                                     >
-                                        <div className="cursor-pointer relative group" onMouseOver={() => handleMouseOver(data.filename)} onMouseOut={handleMouseOut}>
+                                        {/* Video/Thumbnail Section */}
+                                        <div
+                                            className="cursor-pointer relative group"
+                                            onMouseOver={() => handleMouseOver(data.filename)}
+                                            onMouseOut={handleMouseOut}
+                                        >
                                             {video === `http://localhost:3000/techvideos/${data.filename}` ? (
-                                                <video ref={streamvideo} src={video} controls autoPlay className="rounded-xl w-full h-50 object-cover"></video>
+                                                <video
+                                                    ref={streamvideo}
+                                                    src={video}
+                                                    controls
+                                                    autoPlay
+                                                    className="rounded-t w-full h-48 object-cover"
+                                                ></video>
                                             ) : (
                                                 <>
-                                                    <img src={data.thumbnail} className="rounded-xl w-full h-50 object-cover" />
-                                                    <p className='bg-black opacity-80 absolute bottom-2 right-2 text-right text-white px-2 rounded-lg text-xs py-1'>{data.duration}</p>
+                                                    <img src={data.thumbnail} className="rounded-t w-full h-48 object-cover transition-opacity duration-300 group-hover:opacity-75" />
+                                                    <p className="bg-black opacity-80 absolute bottom-2 right-2 text-white px-2 rounded-lg text-xs py-1">
+                                                        {data.duration}
+                                                    </p>
                                                 </>
                                             )}
                                         </div>
-                                        <div className="py-5">
-                                            <h2 className="text-lg font-semibold text-gray-900 mb-0">{data.title}</h2>
-                                            <p className=" line-clamp-2 text-sm text-gray-600 mb-2 font-medium">
-                                                {data.description}
-                                            </p>
 
-                                            <p className="font-medium text-sm text-gray-700">
-                                                <span className=" text-gray-600">Uploaded By: </span>
-                                                <span className="text-gray-600">{data.name}</span>
-                                            </p>
+                                        {/* Video Info Section */}
+                                        <div className="p-5 space-y-2">
+                                            <div>
+                                                <h2 className="text-lg font-bold text-gray-900 mb-1">{data.title}</h2>
+                                            </div>
+                                            <div>
+
+                                                <p className="pt-3 border-t-2 line-clamp-2 text-sm text-gray-600 mb-2 font-medium">
+                                                    {data.description}
+                                                </p>
+
+                                                <p className="font-medium text-sm text-gray-700 flex items-center">
+                                                    <span className="text-gray-500">Uploaded By:</span>
+                                                    <span className="text-gray-900 ml-1">{data.name}</span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
+
                         ) : (
                             !addVideo && (
                                 <div className="flex flex-col items-center text-center space-y-6 py-12">
@@ -219,25 +239,25 @@ function TechVideos() {
             </div>
 
             {addVideo && (
-                <div className='bg-[#f5ebe0] w-full'>
+                <div className='bg-[#23528a] w-full'>
 
                     <div className="absolute top-0 w-full flex justify-center items-center min-h-screen p-6">
-                        <form method="post" onSubmit={handleSubmit(uploadVideo)} className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-[#d0b797]">
+                        <form method="post" onSubmit={handleSubmit(uploadVideo)} className="w-full max-w-md bg-white p-6 rounded-xl shadow-lg border border-[#5b8ac3]">
                             <div className='flex justify-between py-4'>
 
-                                <h2 className="text-center text-2xl font-semibold text-[#8a6f47] mb-4">Upload Video</h2>
+                                <h2 className="text-center text-2xl font-semibold text-[#23528a] mb-4">Upload Video</h2>
                                 <div className='cursor-pointer' onClick={() => setAddVideo(false)}>
                                     <FontAwesomeIcon icon={faClose} />
                                 </div>
                             </div>
                             {/* Title */}
                             <div className="mb-4">
-                                <label htmlFor="uploadtitle" className="block text-[#8a6f47] font-medium">Title:</label>
+                                <label htmlFor="uploadtitle" className="block text-[#23528a] font-medium">Title:</label>
                                 <input
                                     type="text"
                                     name="uploadtitle"
                                     id="uploadtitle"
-                                    className="w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                    className="w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                     placeholder="Enter video title"
 
                                     {...register("uploadtitle", { required: "Please Provide Title of Video" })}
@@ -247,12 +267,12 @@ function TechVideos() {
 
                             {/* Description */}
                             <div className="mb-4">
-                                <label htmlFor="uploaddescription" className="block text-[#8a6f47] font-medium">Description:</label>
+                                <label htmlFor="uploaddescription" className="block text-[#23528a] font-medium">Description:</label>
                                 <textarea
                                     rows={4}
                                     name="uploaddescription"
                                     id="uploaddescription"
-                                    className="line-clamp-2 w-full p-2 mt-1 border border-[#d0b797] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8a6f47]"
+                                    className="line-clamp-2 w-full p-2 mt-1 border border-[#23528a] rounded-md focus:outline-none focus:ring-2 focus:ring-[#23528a]"
                                     placeholder="Enter video description"
                                     {...register("uploaddescription", { required: "Please Provide Description of Video" })}
                                 ></textarea>
@@ -262,12 +282,12 @@ function TechVideos() {
 
                             {/* Video Upload */}
                             <div className="mb-4">
-                                <label htmlFor="uploadvideo" className="block text-[#8a6f47] font-medium">Select Video:</label>
+                                <label htmlFor="uploadvideo" className="block text-[#23528a] font-medium">Select Video:</label>
 
                                 {/* Custom File Input Button */}
                                 <label
                                     htmlFor="uploadvideo"
-                                    className="mt-2 block w-full text-center bg-[#d0b797] text-white py-2 rounded-lg cursor-pointer hover:bg-[#8a6f47] transition"
+                                    className="mt-2 block w-full text-center bg-[#23528a] text-white py-2 rounded-lg cursor-pointer hover:bg-[#23528a] transition"
                                 >
                                     Choose File
                                 </label>
@@ -281,17 +301,17 @@ function TechVideos() {
                             {/* Video Preview */}
                             {preview && (
                                 <div className="mt-4">
-                                    <video ref={videoRef} src={preview} controls className="w-full rounded-lg border border-[#d0b797] shadow-md"></video>
+                                    <video ref={videoRef} src={preview} controls className="w-full rounded-lg border border-[#23528a] shadow-md"></video>
                                 </div>
                             )}
 
                             <div className="mb-4">
-                                <label htmlFor="uploadthumbnail" className="block text-[#8a6f47] font-medium">Select Thumbnail:</label>
+                                <label htmlFor="uploadthumbnail" className="block text-[#23528a] font-medium">Select Thumbnail:</label>
 
                                 {/* Custom File Input Button */}
                                 <label
                                     htmlFor="uploadthumbnail"
-                                    className="mt-2 block w-full text-center bg-[#d0b797] text-white py-2 rounded-lg cursor-pointer hover:bg-[#8a6f47] transition"
+                                    className="mt-2 block w-full text-center bg-[#23528a] text-white py-2 rounded-lg cursor-pointer hover:bg-[#23528a] transition"
                                 >
                                     Choose File
                                 </label>
@@ -305,14 +325,14 @@ function TechVideos() {
                             {/* Video Preview */}
                             {thubmnailpreview && (
                                 <div className="mt-4">
-                                    <img src={thubmnailpreview} className="w-full rounded-lg border border-[#d0b797] shadow-md" />
+                                    <img src={thubmnailpreview} className="w-full rounded-lg border border-[#23528a] shadow-md" />
                                 </div>
                             )}
 
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                className="w-full mt-4 bg-[#8a6f47] text-white py-2 rounded-lg font-semibold hover:bg-[#6d5733] transition"
+                                className="w-full mt-4 bg-[#23528a] text-white py-2 rounded-lg font-semibold hover:bg-[#6d5733] transition"
                             >
                                 {progress ? `${progress} %` : "Upload"}
                             </button>
@@ -321,7 +341,6 @@ function TechVideos() {
                 </div>
             )}
 
-            <Footer />
         </>
     )
 }
