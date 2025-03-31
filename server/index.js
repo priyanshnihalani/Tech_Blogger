@@ -77,8 +77,7 @@ app.post('/signup', async (request, response) => {
         response.status(200).send({ message: "Success!", accesstoken, id: result.insertedId.toString(), name });
 
     } catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 });
 
@@ -105,8 +104,7 @@ app.post('/signin', async (request, response) => {
         response.status(200).send({ message: "Success!", name: user.name, accesstoken, id: user._id.toString() });
 
     } catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 });
 
@@ -133,8 +131,7 @@ app.post('/adminsignin', async (request, response) => {
         response.status(200).send({ message: "Success!", name: user.name, accesstoken, id: user._id.toString() });
 
     } catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 });
 
@@ -157,8 +154,7 @@ app.post('/adminsignup', async (request, response) => {
         response.status(200).send({ message: "Success!", accesstoken, id: result.insertedId.toString(), name });
 
     } catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 });
 
@@ -187,8 +183,7 @@ app.get('/techtutorials', async (request, response) => {
     }
 
     catch (error) {
-        console.log(error)
-        return response.status(500).send({ message: "Internal Server Error" });
+        next(error);
 
     }
 
@@ -218,7 +213,7 @@ app.get('/contactusmessages', async (request, response) => {
         response.status(200).send({ message: "Success!", result });
     }
     catch (error) {
-        response.status(500).json({ message: "Internal Server Error" });
+        next(error);
     }
 
 })
@@ -244,7 +239,7 @@ app.get("/techvideosinfo", async (request, response) => {
 
         response.json({ videos });
     } catch (error) {
-        response.status(500).json({ message: "Internal Server Error", error });
+        next(error);
     }
 });
 
@@ -298,8 +293,7 @@ app.get('/techposts', async (request, response) => {
         response.status(200).send({ data: imageswithandwithout });
 
     } catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 });
 
@@ -318,8 +312,7 @@ app.delete('/deletepost', async (request, response) => {
         }
     }
     catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 })
 
@@ -339,8 +332,7 @@ app.delete('/deletetutorial', async (request, response) => {
 
     }
     catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 })
 
@@ -360,8 +352,7 @@ app.delete('/deletevideo', async (request, response) => {
 
     }
     catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 
 })
@@ -414,8 +405,7 @@ app.post('/uploadvideos', upload.fields([
             });
         }
     } catch (error) {
-        console.error(error);
-        response.status(500).send({ message: "Internal Server Error" });
+        next(error);
     }
 });
 
@@ -444,7 +434,7 @@ app.post('/uploadpost', upload.single('postImage'), async (request, response) =>
 
     }
     catch (error) {
-        response.status(500).send({ message: "Internal Server Error" })
+        next(error);
     }
 })
 
@@ -462,11 +452,16 @@ app.get('/alldata', async (request, response) => {
         response.send({ message: "Success!", comments, techPosts, techVideos, techTutorials, users })
     }
     catch (error) {
-        console.log(error)
-        response.status(500).send({ message: "Internal Server Error!" })
+        next(error);
     }
 
 })
+
+app.use((err, req, res, next) => {
+    console.error(err.message);
+    res.status(500).send({ message: "Internal Server Error" });
+});
+
 app.listen(3000, () => {
     console.log('Server is running on http://localhost:3000');
 });
