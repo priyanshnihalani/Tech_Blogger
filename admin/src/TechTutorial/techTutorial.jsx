@@ -59,7 +59,7 @@ function TechTutorial() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({id})
+                body: JSON.stringify({ id })
             });
 
             const result = await response.json();
@@ -88,42 +88,42 @@ function TechTutorial() {
 
                 <section>
                     {links.length > 0 ?
-                              <div className="my-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6">
-                              {links.map((item, index) => (
-                                  <div
-                                      key={index}
-                                      className="relative bg-white shadow-lg rounded-2xl p-6 hover:scale-105 transition-transform duration-300 border border-gray-200"
-                                      style={{
-                                          clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
-                                      }}
-                                  >
-                                      <div className="flex flex-col justify-between h-full space-y-3">
-                                          <div className="space-y-1">
-                                              <h3 className="text-lg sm:text-xl font-semibold text-gray-800">{item.title}</h3>
-                                              <p className="text-gray-600 line-clamp-2">{item.description}</p>
-                                          </div>
-                  
-                                          <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between my-6">
-                                              <p className="text-sm text-gray-600">Uploaded By: {item.name}</p>
-                                              <button
-                                                  onClick={() => window.open(item.url, "_blank")}
-                                                  className="cursor-pointer mt-3 sm:mt-0 bg-[#23528a] text-white px-5 py-2 rounded-md hover:bg-[#7494bb] transition-colors"
-                                              >
-                                                  Visit
-                                              </button>
-                                          </div>
-                                      </div>
-                                      <div className="my-2 py-4">
+                        <div className="my-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6">
+                            {links.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="relative bg-white shadow-lg rounded-2xl py-10 px-4 hover:scale-105 transition-transform duration-300 border border-gray-200"
+                                    style={{
+                                        clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
+                                    }}
+                                >
+                                    <div className="flex flex-col justify-between h-full space-y-3">
+                                        <div className="space-y-1">
+                                            <h3 className="text-lg sm:text-xl font-semibold text-gray-800">{item.title}</h3>
+                                            <p className="text-gray-600 line-clamp-2">{item.description}</p>
+                                        </div>
+
+                                        <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between my-4">
+                                            <p className="text-sm text-gray-600">Uploaded By: {item.name}</p>
+                                            <button
+                                                onClick={() => window.open(item.url, "_blank")}
+                                                className="cursor-pointer mt-3 sm:mt-0 bg-[#23528a] text-white px-5 py-2 rounded-md hover:bg-[#7494bb] transition-colors"
+                                            >
+                                                Visit
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="-py-10 border-t border-gray-200">
                                         <button
                                             onClick={() => handleDeleteTutorial(item._id)}
-                                            className="absolute bottom-0   w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-sm"
+                                            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-sm font-semibold transition-colors"
                                         >
                                             Delete Tutorial
                                         </button>
                                     </div>
-                                  </div>
-                              ))}
-                          </div>
+                                </div>
+                            ))}
+                        </div>
                         :
                         <div className='w-full p-10'>
                             <img src='./images/link.png' className='mx-auto w-1/3' />
