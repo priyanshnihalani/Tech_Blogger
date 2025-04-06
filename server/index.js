@@ -317,11 +317,12 @@ app.delete('/deletepost', async (request, response) => {
 })
 
 app.delete('/deletetutorial', async (request, response) => {
-    const { timeStamp } = request.body;
+    const { id } = request.body;
+    console.log(id)
     const db = client.db(dbName);
     try {
 
-        const techTutorials = await db.collection("techTutorials").deleteOne({ timeStamp })
+        const techTutorials = await db.collection("techtutorials").deleteOne({ _id: new ObjectId(id) })
 
         if (techTutorials.deletedCount > 0) {
             response.status(200).send({ message: "Success!" });
@@ -454,7 +455,6 @@ app.get('/alldata', async (request, response) => {
     catch (error) {
         next(error);
     }
-
 })
 
 app.use((err, req, res, next) => {

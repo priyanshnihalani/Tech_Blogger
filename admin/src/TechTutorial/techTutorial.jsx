@@ -49,6 +49,32 @@ function TechTutorial() {
         window.location.reload()
     }
 
+    async function handleDeleteTutorial(id) {
+        const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/deletetutorial`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({id})
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (result.message === "Deleted Successfully") {
+                setPosts(prev => prev.filter(post => post._id !== id));
+                window.location.reload()
+            }
+        } catch (error) {
+            alert("Error deleting post: " + error.message);
+        }
+    }
+
+
     return (
         <>
             <div className='w-full min-h-screen  text-white flex flex-col items-center'>
@@ -66,7 +92,7 @@ function TechTutorial() {
                               {links.map((item, index) => (
                                   <div
                                       key={index}
-                                      className=" relative bg-white shadow-lg rounded-2xl p-6 hover:scale-105 transition-transform duration-300 border border-gray-200"
+                                      className="relative bg-white shadow-lg rounded-2xl p-6 hover:scale-105 transition-transform duration-300 border border-gray-200"
                                       style={{
                                           clipPath: "polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)",
                                       }}
@@ -77,7 +103,7 @@ function TechTutorial() {
                                               <p className="text-gray-600 line-clamp-2">{item.description}</p>
                                           </div>
                   
-                                          <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between">
+                                          <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between my-6">
                                               <p className="text-sm text-gray-600">Uploaded By: {item.name}</p>
                                               <button
                                                   onClick={() => window.open(item.url, "_blank")}
@@ -87,6 +113,14 @@ function TechTutorial() {
                                               </button>
                                           </div>
                                       </div>
+                                      <div className="my-2 py-4">
+                                        <button
+                                            onClick={() => handleDeleteTutorial(item._id)}
+                                            className="absolute bottom-0   w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-sm"
+                                        >
+                                            Delete Tutorial
+                                        </button>
+                                    </div>
                                   </div>
                               ))}
                           </div>

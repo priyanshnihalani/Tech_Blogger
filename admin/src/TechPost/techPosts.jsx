@@ -111,6 +111,31 @@ function TechPosts() {
         }
     }
 
+    async function handleDeletePost(id) {
+        const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/deletepost`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({id})
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (result.message === "Deleted Successfully") {
+                setPosts(prev => prev.filter(post => post._id !== id));
+                window.location.reload()
+            }
+        } catch (error) {
+            alert("Error deleting post: " + error.message);
+        }
+    }
+
     return (
         <>
             <div className='w-full min-h-screen  text-white flex flex-col items-center'>
@@ -126,29 +151,41 @@ function TechPosts() {
                     {posts.length > 0 && !chooseUpload ? (
                         <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-4 space-y-4 md:space-y-0 space-x-2 w-full">
                             {posts.map((item, index) => (
-                                <div key={index} className='shadow bg-white  rounded overflow-hidden py-5 px-2  transition-transform duration-300 hover:scale-105'>
+                                <div key={index} className='shadow bg-white rounded overflow-hidden py-5 px-2 transition-transform duration-300 hover:scale-105'>
 
                                     {item.url && (
                                         <img src={item.url} alt="Post Image" className='rounded w-full h-50 object-cover' />
                                     )}
                                     {item.article && (
-                                        <div className={`folded-paper p-4  rounded w-full h-50 flex items-center justify-center text-white font-medium text-sm shadow-md inset-shadow-emerald-50`} style={{ backgroundColor: item.bgColor }}>
+                                        <div className={`folded-paper p-4 rounded w-full h-50 flex items-center justify-center text-white font-medium text-sm shadow-md`} style={{ backgroundColor: item.bgColor }}>
                                             <p className='line-clamp-6 text-center'>{item.article}</p>
                                         </div>
                                     )}
+
                                     <div className='mt-4'>
                                         <h2 className='px-4 text-lg font-semibold text-gray-900 mb-1'>{item.title}</h2>
                                         <div className='px-2 border-t border-black pt-2'>
                                             <p className="px-2 line-clamp-2 text-gray-600 mb-2 font-medium">
                                                 {item.description}
                                             </p>
-                                            <p className='px-2  font-medium text-gray-600 text-sm'>
+                                            <p className='px-2 font-medium text-gray-600 text-sm'>
                                                 <span className="font-semibold">Uploaded By:</span> {item.name}
                                             </p>
                                         </div>
                                     </div>
+
+                                    {/* 🗑️ Delete Button */}
+                                    <div className="relative mt-4 px-4">
+                                        <button
+                                            onClick={() => handleDeletePost(item.id)}
+                                            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-sm"
+                                        >
+                                            Delete Post
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
+
                         </div>
                     ) : (
                         !chooseUpload && (

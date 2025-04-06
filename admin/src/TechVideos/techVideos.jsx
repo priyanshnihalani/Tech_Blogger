@@ -98,6 +98,31 @@ function TechVideos() {
     }, []);
 
 
+    async function handleDeleteVideo(id) {
+        const confirmDelete = window.confirm("Are you sure you want to delete this post?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`http://localhost:3000/deletevideo`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({id})
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            if (result.message === "Deleted Successfully") {
+                setPosts(prev => prev.filter(post => post._id !== id));
+                window.location.reload()
+            }
+        } catch (error) {
+            alert("Error deleting post: " + error.message);
+        }
+    }
+
     function handleMouseOver(filename) {
         try {
             setLoading(true)
@@ -174,7 +199,7 @@ function TechVideos() {
                 {loading ? <MyContentLoader /> :
                     <section className="relative w-full mt-32 md:mt-20 px-6">
                         {videos.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 py-10 w-full">
+                            <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 py-10 w-full">
                                 {videos.map((data, index) => (
                                     <div
                                         key={index}
@@ -221,6 +246,14 @@ function TechVideos() {
                                                 </p>
                                             </div>
                                         </div>
+                                        <div className="py-4">
+                                        <button
+                                            onClick={() => handleDeleteVideo(data.id)}
+                                            className="absolute bottom-0  w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md text-sm"
+                                        >
+                                            Delete Video
+                                        </button>
+                                    </div>
                                     </div>
                                 ))}
                             </div>
