@@ -55,7 +55,7 @@ function Home() {
             <div className="mt-10">
                 <h2 className="text-xl font-semibold my-6">📊 Live Analytics</h2>
                 <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={analyticsData} barSize={80}>
+                    <BarChart data={analyticsData} barSize={400}>
                         <XAxis dataKey="name" stroke={darkMode ? "#ffffff" : "#000000"} />
                         <YAxis stroke={darkMode ? "#ffffff" : "#000000"} />
                         <Tooltip cursor={{ fill: "#ddd" }} />

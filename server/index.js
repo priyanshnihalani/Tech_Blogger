@@ -204,18 +204,18 @@ app.post('/contactus', async (request, response) => {
 
 })
 
-app.get('/contactusmessages', async (request, response) => {
+app.get('/contactmessages', async (request, response) => {
     const db = client.db(dbName);
 
     try {
-
+        
         const result = await db.collection("contactmessages").find().toArray();
         response.status(200).send({ message: "Success!", result });
+        console.log(result)
     }
     catch (error) {
         next(error);
     }
-
 })
 
 app.get("/techvideosinfo", async (request, response) => {

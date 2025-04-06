@@ -9,7 +9,7 @@ function ContactUs() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch("http://localhost:3000/contactusmessages")
+            const response = await fetch("http://localhost:3000/contactmessages")
             const result = await response.json()
             setData(result?.result)
             console.log(result.result)
