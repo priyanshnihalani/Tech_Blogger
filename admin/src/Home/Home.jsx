@@ -8,6 +8,15 @@ function Home() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const token = sessionStorage.getItem('adminaccesstoken')
+        const id = sessionStorage.getItem('adminid')
+        const name = sessionStorage.getItem('adminname')
+        if (!token || !id || !name) {
+            navigate('/register')
+            alert("Please login to access this page")
+        }   
+    }, [])
+    useEffect(() => {
         async function fetchAllData() {
             try {
                 const response = await fetch("http://localhost:3000/alldata");

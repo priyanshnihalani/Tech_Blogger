@@ -25,9 +25,9 @@ function Register() {
 
         if (result.message == "Success!") {
             navigate('/')
-            localStorage.setItem('accesstoken', result.accesstoken)
-            localStorage.setItem('id', result.id)
-            localStorage.setItem('name', result.name)
+            sessionStorage.setItem('adminaccesstoken', result.accesstoken);
+            sessionStorage.setItem('adminid', result.id);
+            sessionStorage.setItem('adminname', result.name);
         }
         else {
             alert(result.message)

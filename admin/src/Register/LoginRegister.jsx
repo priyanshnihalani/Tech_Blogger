@@ -7,9 +7,9 @@ import Footer from "../Footer/Footer.jsx";
 function LoginRegister() {
 
     useEffect(() => {
-        let data = localStorage.getItem('accesstoken')
-        let data1 = localStorage.getItem('id')
-        let data2 = localStorage.getItem('name')
+        let data = sessionStorage.getItem('adminaccesstoken')
+        let data1 = sessionStorage.getItem('adminid')
+        let data2 = sessionStorage.getItem('adminname')
 
         if(data && data1 && data2){
             navigate('/')
@@ -30,7 +30,6 @@ function LoginRegister() {
         <>
             <div className="flex justify-between w-full items-center bg-gray-600 text-white py-3 px-8">
                 <h1 className="font-black text-2xl">Tech Blogger</h1>
-                <h1 className="font-medium">Need Help? <span onClick={() => navigate('/contactus')} className="underline cursor-pointer"> Contact Us</span></h1>
             </div>
             <div className="min-h-screen w-full flex flex-col space-y-20 justify-center items-center px-6 md:px-20 lg:px-40 py-0 ">
 

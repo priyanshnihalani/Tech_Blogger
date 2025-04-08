@@ -147,7 +147,7 @@ app.post('/adminsignup', async (request, response) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await db.collection("users").insertOne({ name, email, password: hashedPassword });
+        const result = await db.collection("admin").insertOne({ name, email, password: hashedPassword });
 
         const accesstoken = jwt.sign({ id: result.insertedId.toString() }, jsonsecretkey, { expiresIn: '30d' });
 
